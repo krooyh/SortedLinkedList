@@ -31,6 +31,7 @@ class SortedLinkedList implements Iterator, Countable
     public function __construct(
         array $elements,
         ?Type $type = null,
+        private readonly SortDirection $direction = SortDirection::ASC,
     ) {
         $this->type = $type ?? Type::fromValue(reset($elements));
 
@@ -48,7 +49,7 @@ class SortedLinkedList implements Iterator, Countable
             $this->head = new Node($element);
         }
         // element should be the new head
-        elseif ($this->head->value > $element) {
+        elseif ($this->shouldBeNewHead($this->head->value, $element)) {
             $oldHead = $this->head;
             $this->head = new Node($element);
             $this->head->next = $oldHead;
@@ -59,7 +60,7 @@ class SortedLinkedList implements Iterator, Countable
             $current = $this->head;
             $previous = null;
 
-            while ($current->value <= $element) {
+            while ($this->shouldContinueTraversal($current->value, $element)) {
                 // Skip if element already exists
                 if ($current->value === $element) {
                     $this->rewind();
@@ -90,6 +91,22 @@ class SortedLinkedList implements Iterator, Countable
         $this->size++;
         //reset the iterator
         $this->rewind();
+    }
+
+    private function shouldBeNewHead(mixed $headValue, mixed $newElement): bool
+    {
+        return match ($this->direction) {
+            SortDirection::ASC => $headValue > $newElement,
+            SortDirection::DESC => $headValue < $newElement,
+        };
+    }
+
+    private function shouldContinueTraversal(mixed $currentValue, mixed $newElement): bool
+    {
+        return match ($this->direction) {
+            SortDirection::ASC => $currentValue <= $newElement,
+            SortDirection::DESC => $currentValue >= $newElement,
+        };
     }
 
     public function remove(mixed $element): void
