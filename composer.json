@@ -1,0 +1,45 @@
+{
+    "name": "krooyh/sorted-linked-list",
+    "description": "library providing a sorted linked list.",
+    "type": "library",
+    "keywords": ["library"],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "SortedLinkedList\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SortedLinkedListTests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "check": [
+            "@cs-fixer:check",
+            "@phpstan",
+            "@test:coverage"
+        ],
+        "fix": [
+            "@cs-fixer:fix"
+        ],
+        "cs-fixer:check": "php-cs-fixer fix --dry-run --diff -v",
+        "cs-fixer:fix": "php-cs-fixer fix --diff -v",
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-text --coverage-clover=clover.xml"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.2"
+    }
+}

@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  PHPUnit:
+    name: PHPUnit (PHP ${{ matrix.php }})
+    if: "!contains(github.event.head_commit.message, '[CI SKIP]')"
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        php:
+          - 8.4
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          ini-file: development
+      - run: composer install
+      - run: vendor/bin/phpunit --coverage-text --coverage-clover=clover.xml
