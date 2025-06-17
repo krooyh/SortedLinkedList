@@ -73,10 +73,10 @@ class SortedLinkedList implements Iterator, Countable
                 $this->size++;
                 $this->rewind();
                 return;
-            } else {
-                $previous = $current;
-                $current = $current->next;
             }
+
+            $previous = $current;
+            $current = $current->next;
         }
 
         $newNode = new Node($element);
