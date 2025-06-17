@@ -1,7 +1,7 @@
 parameters:
+    ignoreErrors:
+        -
+            identifier: property.nonObject
     level: max
-
     paths:
-        - examples/
         - src/
-        - tests/
