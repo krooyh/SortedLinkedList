@@ -7,7 +7,7 @@ namespace SortedLinkedList;
 use Countable;
 use InvalidArgumentException;
 use Iterator;
-use OutOfBoundsException as OutOfBoundsExceptionAlias;
+use OutOfBoundsException;
 
 /**
  * @implements Iterator<int, int|string>
@@ -43,46 +43,52 @@ class SortedLinkedList implements Iterator, Countable
     {
         $this->validateElementType($element);
 
+        // if empty list
         if ($this->head === null) {
             $this->head = new Node($element);
-            $this->size++;
-            $this->rewind();
-            return;
         }
-
-        if ($this->head->value > $element) {
+        // element should be the new head
+        elseif ($this->head->value > $element) {
             $oldHead = $this->head;
             $this->head = new Node($element);
             $this->head->next = $oldHead;
-            $this->size++;
-            $this->rewind();
-            return;
         }
+        // element should be inserted somewhere in the list
+        else {
+            $elementAdded = false;
+            $current = $this->head;
+            $previous = null;
 
-        $current = $this->head;
-        $previous = null;
+            while ($current->value <= $element) {
+                // Skip if element already exists
+                if ($current->value === $element) {
+                    $this->rewind();
+                    return;
+                }
 
-        while ($current->value <= $element) {
-            if ($current->value === $element) {
-                $this->rewind();
-                return;
+                // If we reached the end of the list, we need to add an element at the end
+                if ($current->next === null) {
+                    $current->next = new Node($element);
+                    $elementAdded = true;
+                    break;
+                }
+
+                $previous = $current;
+                $current = $current->next;
             }
 
-            if ($current->next === null) {
-                $current->next = new Node($element);
-                $this->size++;
-                $this->rewind();
-                return;
+            // If we didn't add the element yet and there was no duplicate,
+            // insert it between previous and current
+            if (!$elementAdded) {
+                $newNode = new Node($element);
+                $previous->next = $newNode;
+                $newNode->next = $current;
             }
-
-            $previous = $current;
-            $current = $current->next;
         }
 
-        $newNode = new Node($element);
-        $previous->next = $newNode;
-        $previous->next->next = $current;
+        //increase the size
         $this->size++;
+        //reset the iterator
         $this->rewind();
     }
 
@@ -93,7 +99,9 @@ class SortedLinkedList implements Iterator, Countable
         $current = $this->head;
         $previous = null;
 
+        //iterate over the list
         while ($current !== null) {
+            //if we found the element, remove it and connect previous and next
             if ($current->value === $element) {
                 $next = $current->next;
                 if ($previous !== null) {
@@ -101,8 +109,11 @@ class SortedLinkedList implements Iterator, Countable
                 } else {
                     $this->head = $next;
                 }
+                //free memory
                 unset($current);
+                //decrease the size
                 $this->size--;
+                //reset the iterator
                 $this->rewind();
                 return;
             }
@@ -110,17 +121,18 @@ class SortedLinkedList implements Iterator, Countable
             $current = $current->next;
         }
 
+        //reset the iterator even if we didn't find the element
         $this->rewind();
     }
 
 
     /**
-     * @throws OutOfBoundsExceptionAlias
+     * @throws OutOfBoundsException
      */
     public function current(): mixed
     {
         /** @phpstan-ignore return.type */
-        return $this->currentItem->value ?? throw new OutOfBoundsExceptionAlias();
+        return $this->currentItem->value ?? throw new OutOfBoundsException();
     }
 
     public function next(): void
