@@ -29,10 +29,14 @@ class SortedLinkedList implements Iterator, Countable
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array $elements,
+        array $elements = [],
         ?Type $type = null,
         private readonly SortDirection $direction = SortDirection::ASC,
     ) {
+        if (empty($elements) && $type === null) {
+            throw new InvalidArgumentException('Type must be specified when creating an empty list');
+        }
+
         $this->type = $type ?? Type::fromValue(reset($elements));
 
         foreach ($elements as $element) {
@@ -126,20 +130,13 @@ class SortedLinkedList implements Iterator, Countable
                 } else {
                     $this->head = $next;
                 }
-                //free memory
-                unset($current);
                 //decrease the size
                 $this->size--;
-                //reset the iterator
-                $this->rewind();
                 return;
             }
             $previous = $current;
             $current = $current->next;
         }
-
-        //reset the iterator even if we didn't find the element
-        $this->rewind();
     }
 
 
@@ -148,14 +145,18 @@ class SortedLinkedList implements Iterator, Countable
      */
     public function current(): mixed
     {
-        /** @phpstan-ignore return.type */
-        return $this->currentItem->value ?? throw new OutOfBoundsException();
+        if ($this->currentItem === null) {
+            throw new OutOfBoundsException('No items in the iterator.');
+        }
+        return $this->currentItem->value;
     }
 
     public function next(): void
     {
-        $this->currentItem = $this->currentItem->next;
-        $this->position++;
+        if ($this->currentItem !== null) {
+            $this->currentItem = $this->currentItem->next;
+            $this->position++;
+        }
     }
 
     public function key(): ?int
@@ -176,7 +177,6 @@ class SortedLinkedList implements Iterator, Countable
 
     public function count(): int
     {
-        /** @phpstan-ignore return.type */
         return $this->size;
     }
 

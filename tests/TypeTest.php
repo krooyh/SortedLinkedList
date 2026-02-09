@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace SortedLinkedListTests;
+
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SortedLinkedList\Type;
@@ -37,7 +39,7 @@ class TypeTest extends TestCase
     public function testFromValue(mixed $value, ?Type $expected, bool $expectedException): void
     {
         if ($expectedException) {
-            self::expectException(\InvalidArgumentException::class);
+            $this->expectException(\InvalidArgumentException::class);
         }
 
         self::assertSame($expected, Type::fromValue($value));

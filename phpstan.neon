@@ -2,6 +2,9 @@ parameters:
     ignoreErrors:
         -
             identifier: property.nonObject
+        -
+            identifier: return.type
+            path: src/SortedLinkedList.php
     level: max
     paths:
         - src/

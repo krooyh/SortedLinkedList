@@ -30,6 +30,8 @@ You can install the **Sorted Linked List** using the package manager [composer](
 require_once __DIR__ . '/vendor/autoload.php';
 
 use SortedLinkedList\SortedLinkedList;
+use SortedLinkedList\Type;
+use SortedLinkedList\SortDirection;
 
 //you can create an instance of SortedLinkedList with an array
 $sortedLinkedList = new SortedLinkedList(elements: [1, 8, 3, 5]);
@@ -39,8 +41,8 @@ $sortedLinkedList = new SortedLinkedList(type: Type::STRING);
 
 //you can create an instance of SortedLinkedList with a type and direction
 $sortedLinkedList = new SortedLinkedList(
-    elements:[1, 8, 3, 5],
-    type: ::INT,
+    elements: [1, 8, 3, 5],
+    type: Type::INTEGER,
     direction: SortDirection::DESC
 );
 

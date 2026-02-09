@@ -27,13 +27,13 @@ class SortedLinkedListTest extends TestCase
         self::assertFalse($sortedLinkedList->valid());
         self::assertEquals(0, $sortedLinkedList->count());
         self::assertNull($sortedLinkedList->key());
-        self::expectException(\OutOfBoundsException::class);
+        $this->expectException(\OutOfBoundsException::class);
         $sortedLinkedList->current();
     }
 
     public function testEmptyListWithoutType(): void
     {
-        self::expectException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new SortedLinkedList([]);
     }
 
@@ -48,7 +48,7 @@ class SortedLinkedListTest extends TestCase
     #[DataProvider('wrongTypeOperationsDataProvider')]
     public function testWrongTypeOperations(Type $type, mixed $element): void
     {
-        self::expectException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new SortedLinkedList([$element], $type);
     }
 
